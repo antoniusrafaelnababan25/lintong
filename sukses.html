@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Laman Belanja - Makanan Kafe</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Laman Belanja - Kafe</h1>
+      </header>
+
+      <!-- Bagian Check Out -->
+      <section class="checkout">
+        <h2>Check Out</h2>
+
+        <!-- Tabel Produk -->
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Nama Produk</th>
+              <th>Deskripsi</th>
+              <th>Harga</th>
+              <th>Jumlah</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <img src="images/coffee.jpg" alt="Kopi" class="product-image" />
+                Kopi Susu
+              </td>
+              <td>Kopi dengan susu segar dan sedikit gula</td>
+              <td>Rp 25.000</td>
+              <td>
+                <input
+                  type="number"
+                  value="1"
+                  min="1"
+                  class="product-quantity"
+                  data-price="25000"
+                  data-product="kopi-susu"
+                />
+              </td>
+              <td class="product-total">Rp 25.000</td>
+            </tr>
+            <tr>
+              <td>
+                <img
+                  src="images/pastry.jpg"
+                  alt="Pastry"
+                  class="product-image"
+                />
+                Pastry Coklat
+              </td>
+              <td>Kue pastry dengan isi coklat leleh</td>
+              <td>Rp 30.000</td>
+              <td>
+                <input
+                  type="number"
+                  value="1"
+                  min="1"
+                  class="product-quantity"
+                  data-price="30000"
+                  data-product="pastry-coklat"
+                />
+              </td>
+              <td class="product-total">Rp 30.000</td>
+            </tr>
+            <tr>
+              <td>
+                <img src="images/salad.jpg" alt="Salad" class="product-image" />
+                Salad Sayur
+              </td>
+              <td>Salad segar dengan saus vinaigrette</td>
+              <td>Rp 40.000</td>
+              <td>
+                <input
+                  type="number"
+                  value="1"
+                  min="1"
+                  class="product-quantity"
+                  data-price="40000"
+                  data-product="salad-sayur"
+                />
+              </td>
+              <td class="product-total">Rp 40.000</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="total">
+          <p>
+            Total: <strong>Rp <span id="total-price">95.000</span></strong>
+          </p>
+        </div>
+
+        <button class="btn-checkout">Lanjutkan ke Pembayaran</button>
+      </section>
+
+      <!-- Bagian Bayar -->
+      <section class="payment" style="display: none">
+        <h2>Bayar</h2>
+        <form action="#" method="post" id="payment-form">
+          <label for="card-number">Nomor Kartu</label>
+          <input
+            type="text"
+            id="card-number"
+            name="card-number"
+            placeholder="Masukkan nomor kartu"
+            required
+          />
+
+          <label for="exp-date">Tanggal Kadaluarsa</label>
+          <input
+            type="text"
+            id="exp-date"
+            name="exp-date"
+            placeholder="MM/YY"
+            required
+          />
+
+          <label for="cvv">CVV</label>
+          <input
+            type="text"
+            id="cvv"
+            name="cvv"
+            placeholder="Masukkan CVV"
+            required
+          />
+
+          <button type="submit" class="btn-pay">Bayar Sekarang</button>
+        </form>
+      </section>
+
+      <!-- Bagian Pembayaran Sukses -->
+      <section class="payment-success" style="display: none">
+        <h2>Pembayaran Berhasil!</h2>
+        <p>
+          Terima kasih atas pembelian Anda. Pembayaran Anda telah diterima dan
+          pesanan Anda sedang diproses.
+        </p>
+        <button class="btn-back-home">Kembali ke Halaman Utama</button>
+      </section>
+    </div>
+
+    <script>
+      const checkoutButton = document.querySelector(".btn-checkout");
+      const checkoutSection = document.querySelector(".checkout");
+      const paymentSection = document.querySelector(".payment");
+      const paymentSuccessSection = document.querySelector(".payment-success");
+      const quantityInputs = document.querySelectorAll(".product-quantity");
+      const totalPriceElement = document.getElementById("total-price");
+      const paymentForm = document.getElementById("payment-form");
+
+      // Function to update total price
+      function updateTotalPrice() {
+        let total = 0;
+        quantityInputs.forEach((input) => {
+          const price = parseInt(input.getAttribute("data-price"));
+          const quantity = parseInt(input.value);
+          const productTotal = price * quantity;
+          // Update individual product total
+          const productTotalElement = input
+            .closest("tr")
+            .querySelector(".product-total");
+          productTotalElement.textContent =
+            "Rp " + productTotal.toLocaleString();
+          total += productTotal;
+        });
+        // Update overall total
+        totalPriceElement.textContent = total.toLocaleString();
+      }
+
+      // Event listener for quantity input changes
+      quantityInputs.forEach((input) => {
+        input.addEventListener("input", updateTotalPrice);
+      });
+
+      checkoutButton.addEventListener("click", function () {
+        checkoutSection.style.display = "none";
+        paymentSection.style.display = "block";
+      });
+
+      // Handle payment form submission
+      paymentForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent form submission
+        paymentSection.style.display = "none";
+        paymentSuccessSection.style.display = "block";
+      });
+
+      // Initialize total price
+      updateTotalPrice();
+
+      // Back to home button
+      const backHomeButton = document.querySelector(".btn-back-home");
+      backHomeButton.addEventListener("click", function () {
+        window.location.reload(); // Reload the page to reset the order
+      });
+    </script>
+  </body>
+</html>
